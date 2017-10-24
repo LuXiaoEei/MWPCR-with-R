@@ -75,15 +75,19 @@ for(i in 1:100){
   }
   print(c(Sys.time()-a,i))
 }
-esp_iid[,nrow(esp_iid)+1] <- c(rep(0,60),rep(1,40))
-esp_short[,nrow(esp_short)+1] <- c(rep(0,60),rep(1,40))
-esp_long[,nrow(esp_long)+1] <- c(rep(0,60),rep(1,40))
-x=1
-y=1
-z=1
-xmin=1
-xmax=20
-ymin=1
-ymax=20
-zmin=1
-zmax=10
+esp_iid <- rbind(esp_iid,c(NA,NA,NA,rep(0,60),rep(1,40)))
+esp_short <- rbind(esp_iid,c(NA,NA,NA,rep(0,60),rep(1,40)))
+esp_long <- rbind(esp_iid,c(NA,NA,NA,rep(0,60),rep(1,40)))
+# write.csv(esp_iid,file = './data/esp_iid.csv')
+# write.csv(esp_short,file = './data/esp_short.csv')
+# write.csv(esp_long,file = './data/esp_long.csv')
+# save(esp_iid,file = './data/esp_iid.Rdata')
+# save(esp_short,file = './data/esp_short.Rdata')
+# save(esp_long,file = './data/esp_long.Rdata')
+
+# esp_iid
+# compute importace score weights matrix
+W <- WI(data = esp_iid)
+# chao jie
+    W[W==0] <- exp(-745)
+Wi <- -4000*log(W)/(-sum(log(W)))
