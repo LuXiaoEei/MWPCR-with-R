@@ -12,9 +12,9 @@ EspShort <- function(location,
                       zmax=10
                       ){
   # print(location[1])
-  x <- location[1]
-  y <- location[2]
-  z <- location[3]
+  x <- as.numeric(location[1])
+  y <- as.numeric(location[2])
+  z <- as.numeric(location[3])
   Area <- SearchPoints3D(x,y,z,SearchPoints0,xmin,xmax,ymin,ymax,zmin,zmax)
   loc <- merge(Area,noise,by=c('x','y','z'))
   return(sum(loc$esp_iid)/nrow(loc))
@@ -91,3 +91,4 @@ W <- WI(data = esp_iid)
 # chao jie
     W[W==0] <- exp(-745)
 Wi <- -4000*log(W)/(-sum(log(W)))
+We <- WE(esp_iid)

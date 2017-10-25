@@ -1,2 +1,2 @@
-exportPattern("^[[:alpha:]]+")
+export(SearchPoints3D0,SearchPoints3D,WI,WE)
 importFrom(aod,wald.test)
