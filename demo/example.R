@@ -96,3 +96,34 @@ ch=1.2
 S=5
 warm <- WARM(esp_iid,ch,S)
 We <- apply(rbind(warm,Dis),2,WE,h=ch^S) #ch=1.2
+# 创建多尺度阈值数据集
+criter <- data.frame(si=c(0.04,0.1,0.23),
+                     se1=c(10^(-3),7*10^(-3),2.5*10^(-2)),
+                     se2=1.2^c(1,3,5))
+# 生成多尺度的权重矩阵Q....Q1 Q2 Q3
+Qmatrix <- createQ(We,Wi,Dis,criter)
+# 数据加权
+X <- t(esp_iid[-nrow(data),-c(1:3)])
+# 减去均值
+X <- X-matrix(rep(1,nrow(X)),ncol = 1)%*%colSums(X)
+Xweig <- array(dim=c(nrow(X),ncol(X),nrow(criter)))
+for (i in 1:nrow(criter)) {
+  Xweig[,,i] <- X%*%Qmatrix[,,i]
+}
+# svd 分解
+K=5 #特征值个数
+for (i in 1:nrow(criter)){
+  message(i,'...',Sys.time())
+  assign(paste('svd',i,sep=''),svd(Xweig[,,i],K,K))
+}
+# svd1 <- svd(Qmatrix[,,1],5,5)
+# svd2 <- svd(Qmatrix[,,2],5,5)
+# svd3 <- svd(Qmatrix[,,3],5,5)
+U <- c()
+for (i in 1:nrow(criter)){
+  U <- cbind(U,eval(parse(text=paste('svd',i,sep = '')))[['u']])
+}
+Y <- t(esp_iid[nrow(esp_iid),-c(1:3)])
+df <- lm(Y~U-1)
+df1 <- glm(Y~U-1,family = binomial(link='logit'),control = list(maxit = 100) )
+
