@@ -91,4 +91,8 @@ W <- WI(data = esp_iid)
 # chao jie
     W[W==0] <- exp(-745)
 Wi <- -4000*log(W)/(-sum(log(W)))
-We <- WE(esp_iid)
+# compute spatial weights matrix
+ch=1.2
+S=5
+warm <- WARM(esp_iid,ch,S)
+We <- apply(rbind(warm,Dis),2,WE,h=ch^S) #ch=1.2

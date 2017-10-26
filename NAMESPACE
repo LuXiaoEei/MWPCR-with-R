@@ -1,2 +1,2 @@
-export(SearchPoints3D0,SearchPoints3D,WI,WE)
+export(SearchPoints3D0,SearchPoints3D,WI,WARM,WE)
 importFrom(aod,wald.test)

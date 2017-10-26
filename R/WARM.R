@@ -1,7 +1,7 @@
 # WARM
 # data <- esp_iid
 # names(data)[4:ncol(data)] <- NA
-WE <- function(data,
+WARM <- function(data,
                ch = 1.2,
                Cn = log(100) * qchisq(df = 2, p = 0.95),
                Kloc = TRUE,
@@ -23,7 +23,7 @@ WE <- function(data,
     W_st <- diag(nrow(data)-1)
     message('迭代开始...',Sys.time())
     for (i in 1:S){
-      message('开始第',i,'此迭代')
+      message('开始第',i,'此迭代\n')
       message('updata W...',Sys.time())
       if (Kloc){
         W_loc <- (1-Dis/ch^i)*sign((1-Dis/ch^i)>=0)
@@ -58,6 +58,7 @@ WE <- function(data,
         Sim <- apply(Init[-nrow(data),],1,Smatrix,Init)  #相似矩阵
       }
     }
+    message('迭代结束...',Sys.time()) 
     return(W)
     }
 
