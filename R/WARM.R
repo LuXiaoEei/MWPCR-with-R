@@ -24,10 +24,10 @@ WARM <- function(data,
     for (i in 1:S){
       message('开始第',i,'此迭代\n')
       message('updata WW...',Sys.time())
-      if (Kloc){
+      if (Kloc){#距离
         W_loc <- (1-Dis/ch^i)*sign((1-Dis/ch^i)>=0)
       }
-      if (Kst){
+      if (Kst){#相似度
         message('update similar matrix...',Sys.time())
         Sim <- apply(Init[-nrow(data),],1,Smatrix,Init)#相似矩阵
         W_st <- exp(-Sim/Cn)

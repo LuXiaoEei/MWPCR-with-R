@@ -108,7 +108,7 @@ Wi <- -4000*log(W)/(-sum(log(W)))
 # compute spatial weights matrix
 ch=1.2
 S=5
-warm <- WARM(data = esp_iid,ch = ch,S = S,Dis = Dis)
+warm <- WARM(data = esp_iid,ch = ch,S = S,Dis = Dis)  #通过Kloc和Kst两个参数可以选择权重的指标
 We <- apply(rbind(warm,Dis),2,WE,h=ch^S) #ch=1.2
 # 创建多尺度阈值数据集
 criter <- data.frame(si=quantile(Wi)[2:4],
