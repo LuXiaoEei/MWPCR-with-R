@@ -21,6 +21,7 @@ WARM <- function(data,
     W_loc <- diag(nrow(data)-1)
     W_st <- diag(nrow(data)-1)
     message('迭代开始...',Sys.time())
+    dict1 <- rep(FALSE,4000)
     for (i in 1:S){
       message('开始第',i,'此迭代\n')
       message('updata WW...',Sys.time())
@@ -29,7 +30,7 @@ WARM <- function(data,
       }
       if (Kst){#相似度
         message('update similar matrix...',Sys.time())
-        Sim <- apply(Init[-nrow(data),],1,Smatrix,Init)#相似矩阵
+        Sim <- apply(Init,1,Smatrix,Init)#相似矩阵
         W_st <- exp(-Sim/Cn)
       }
       WW <- W_loc*W_st
@@ -38,22 +39,22 @@ WARM <- function(data,
         A <- t(apply(data[-nrow(data),],1,CompA,ch^i,WW,Dis,data,Init))
         # updata para
         message('updata beta...',Sys.time())
-        dict1 <- rep(FALSE,4000)
+ 
         beta <- t(apply(data[-nrow(data),],1,updatebeta,h=ch^i,WW,Dis,data,Init,A))
-        beta[dict1,] <- Init0[dict1,1:2]
+        beta[dict1,] <- Init0[dict1,1:2]#停止的不进行迭代
         if (i>S0){
           D <- stopcriter(Init,Init3)
           dict0 <- D>qchisq(df = 2, p = 0.8)
+          dict <- (!dict1)&dict0 #保留上一步超过的
           dict1 <- dict1|dict0 #保留所有超过的
-          dict <- !dict1&dict0 #保留上一步超过的
-          beta[dict,] <- Init0[dict,1:2]
+          beta[dict,] <- Init0[dict,1:2]#停止
         }
         Init[,1:2] <- beta
         message('updata cov...',Sys.time())## update cov
         espn <- t(apply(data[-nrow(data),],1,epsn,WW,Dis,h=ch^i,Init,beta,data))
-        Cov <- t(apply(data[-nrow(data),],1,updatecov,espn,h=ch^i,Dis,A,data))
+        Cov <- t(apply(data[-nrow(data),],1,updatecov,espn,A,data))
         Init[,4:7] <- Cov
-        if ( i==3) {Init3 <- Init}
+        if ( i==S0) {Init3 <- Init}
         Init0 <- Init
       }
     }
