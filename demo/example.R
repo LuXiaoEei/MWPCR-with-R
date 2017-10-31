@@ -21,11 +21,11 @@ EspShort <- function(location,
 }
 
 # long range spatial correlation noise
-EspLong <- function(g,avg,std,noise){
+EspLong <- function(postion,avg,std,noise){
   zeta1 <- rnorm(nrow(noise),avg,std)
   zeta2 <- rnorm(nrow(noise),avg,std)
   zeta3 <- rnorm(nrow(noise),avg,std)
-  return(2*sin(pi*g[1])*zeta1+2*cos(pi*g[2])*zeta2+2*sin(pi*g[3]/0.5)*zeta3+noise$esp_iid)
+  return(2*sin(pi*postion[,1])*zeta1+2*cos(pi*postion[,1])*zeta2+2*sin(pi*postion[,3]/0.5)*zeta3+noise$esp_iid)
 }
 
 
@@ -51,7 +51,6 @@ rm(dat3D,dat2D)
 # generate 100 subject with 60 from zero and the rest from one 
 avg <- 0
 std <- 0.1
-g <- rnorm(3,avg,std)
 SearchPoints0 <- SearchPoints3D0(h=1)
 noise <- dat3D_zero[,c('x','y','z')]
 
@@ -64,7 +63,7 @@ for(i in 1:100){
   a <- Sys.time()
   noise$esp_iid <- rnorm(4000,0,0.1)
   noise$esp_short <- apply(noise,1,EspShort,noise,SearchPoints0)
-  noise$esp_long <- EspLong(g,avg,std,noise)
+  noise$esp_long <- EspLong(esp_long,avg,std,noise)
   if (i %in% 1:60){
     esp_0 <- cbind(esp_0,dat3D_zero$value)
     esp_iid <- cbind(esp_iid,dat3D_zero$value+noise$esp_iid)
